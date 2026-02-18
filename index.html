@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <h1>
+      Escaner SQL | tablas dinamicas
+    </h1>
+    <p>Por: Manuel Eduardo Peñaloza López</p>
+  </header>
+  <main class="main">
+    <article class="left">
+      <form>
+        <div class="header-form">
+          <label for="input">Ingrese una sentencia sql</label>
+          <input type="button" name="escan" value="Escanear" id="run">
+        </div>
+        <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="inputSql"
+          id="input" rows="20" cols="80"></textarea>
+      </form>
+      <div class="console">
+        <h4>Resultados:</h4>
+        <p id="log">
+          Todo correcto :)
+        </p>
+      </div>
+    </article>
+    <article class="results">
+      <table id="identifiersTable">
+        <tr>
+          <th>Identificador</th>
+          <th>Valor</th>
+          <th>Linea</th>
+        </tr>
+        <tr>
+          <td>NNOMBRE</td>
+          <td>401</td>
+          <td>1</td>
+        </tr>
+       <tr>
+          <td>TURNO</td>
+          <td>402</td>
+          <td>1</td>
+        </tr> 
+      </table>
+
+      <br>
+      <table>
+        <tr>
+          <th>Constante</th>
+          <th>Valor</th>
+          <th>Linea</th>
+        </tr>
+        <tr>
+          <td>Anombree</td>
+          <td>401</td>
+          <td>1</td>
+        </tr>
+      </table>
+
+    </article>
+  </main>
+
+  <script src="scripts/index.js"></script>
+</body>
+
+</html>
