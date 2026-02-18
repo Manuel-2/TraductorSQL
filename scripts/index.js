@@ -93,21 +93,29 @@ run.addEventListener("click", () => {
   });
 
   renderTable(identifiers,identifiersTable);
-  renderTable(identifiers,constantsTable);
-  // console.log("CONSTANTS:", constants);
-  // console.log("IDENTIFIERS:", identifiers);
+  renderTable(constants,constantsTable);
 });
 
 function renderTable(data, table) {
-  console.log(table.innerHTML);
-  let toRender = table.innerHTML;
-
+  let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
+  prevRows.forEach( prev_row => table.removeChild(prev_row));
+  
+  let fragment = document.createDocumentFragment();
   data.forEach(row => {
-    toRender += `<tr>
-          <td>${row.token}</td>
-          <td>${row.value}</td>
-          <td>${row.line}</td>
-        </tr>`;
+    let rowTable = document.createElement('tr');
+
+    let tokenCell = document.createElement('td');
+    tokenCell.innerText = row.token;
+    let valueCell = document.createElement('td');
+    valueCell.innerText = row.value;
+    let lineCell  = document.createElement('td');
+    lineCell.innerText = row.line;
+
+    rowTable.appendChild(tokenCell);
+    rowTable.appendChild(valueCell);
+    rowTable.appendChild(lineCell);
+
+    fragment.appendChild(rowTable);
   });
-  table.innerHTML = toRender;
+  table.appendChild(fragment);
 }

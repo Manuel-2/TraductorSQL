@@ -18,8 +18,8 @@ html {
 
 body {
   background-color: var(--dark-color);
-  width: 100%;
-  max-width: var(--max-width);
+  width: fit-content;
+  /* max-width: var(--max-width); */
   margin: 0 auto;
 }
 
@@ -61,15 +61,38 @@ main>.left>form>label {
   padding: 5px;
 }
 
+.header-form {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+#run {
+  background-color: var(--dark-color);
+  color: var(--main-color);
+  font-style: bold;
+  padding: 2px;
+  border: none;
+  cursor: pointer;
+}
+
 textarea {
   background-color: var(--dark-color);
   color: var(--main-color);
 
-  font-size: 16px;
+  font-size: 14px;
+}
+
+.results {
+  display: flex;
+  height: fit-content;
 }
 
 .results>table {
   border: solid var(--main-color) 2px;
+  margin-left: 20px;
+  height: fit-content;
+  font-size: 14px;
 }
 
 .console>h4 {
