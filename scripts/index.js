@@ -93,6 +93,7 @@ run.addEventListener("click", () => {
   });
 
   renderTable(identifiers,identifiersTable);
+  renderTable(identifiers,constantsTable);
   // console.log("CONSTANTS:", constants);
   // console.log("IDENTIFIERS:", identifiers);
 });
