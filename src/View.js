@@ -5,8 +5,10 @@ export class View {
     //TODO: aceder a la consola esa y mortar el error
 
     if (results.status == 'Error') {
+      console.log("erorr lexico unu");
       return;
     }
+    console.log(results.data.tokens);
 
     //TODO mostar tabla de lexico completo con delimitadores palabras clave y asi
     this.renderDinamicTable(results.data.identifiers, identifiersTable);

@@ -26,7 +26,6 @@ const delimiters = {
   ".": 51,
   "(": 52,
   ")": 53,
-  "\'": 54,
 }
 
 const mathOperators = {
@@ -44,50 +43,101 @@ const relationalOperators = {
   "<=": 85,
 }
 
+const operatorRegex = />=|<=|<>|[+\-*/=<>]/;
+const stringRegex = /^'[^']*'$/;
+const numberRegex = /^\d+$/;
+const delimiterRegex = /,|\(|\)|\./;
+const identifierRegex = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b/g;
 
 export class Analyzer {
+
   static analyzeLexicaly(lines) {
     let identifiers = [];
     let constants = [];
+    let tokens = [];
+
     let constantsValueCounter = 400;
     let identifiersValueCounter = 300;
 
-    lines.forEach((line, lineIndex) => {
-      let tokens = line.match(/'[^']*'|\d+|[A-Za-z_]\w*/g) || [];
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      let line = lines[lineIndex];
+      let lineTokens = line.match(tokenRegex) || [];
 
-      const stringRegex = /^'[^']*'$/;
-      const numberRegex = /^\d+$/;
+      for (let tokenIndex = 0; tokenIndex < lineTokens.length; tokenIndex++) {
 
-      tokens.forEach(token => {
-        let tokenLower = token.toLowerCase();
+        let token = lineTokens[tokenIndex];
+        let type = 0;
+        let code = 0;
 
+        // CONSTANTS
         if (stringRegex.test(token) || numberRegex.test(token)) {
           constantsValueCounter++;
-          constants.push({
-            token: token,
-            value: constantsValueCounter,
-            line: lineIndex + 1,
-          });
-        }
-        else if (!keywords[tokenLower]) {
-          identifiersValueCounter++;
-          identifiers.push({
-            token: token,
-            value: identifiersValueCounter,
-            line: lineIndex + 1,
-          });
-        }
-      });
-    });
+          code = constantsValueCounter;
+          type = 6;
 
+          constants.push({
+            token,
+            value: code,
+            line: lineIndex + 1,
+          });
+
+        // OPERATORS
+        } else if (operatorRegex.test(token)) {
+          type = 8;
+          code = relationalOperators[token] || mathOperators[token];
+
+        // DELIMITERS
+        } else if (delimiterRegex.test(token)) {
+          type = 5;
+          code = delimiters[token];
+
+        // IDENTIFIERS / KEYWORDS
+        } else if (identifierRegex.test(token)) {
+
+          let tokenLower = token.toLowerCase();
+
+          if (keywords.hasOwnProperty(tokenLower)) {
+            type = 1;
+            code = keywords[tokenLower];
+          } else {
+            identifiersValueCounter++;
+            code = identifiersValueCounter;
+            type = 4;
+
+            identifiers.push({
+              token,
+              value: code,
+              line: lineIndex + 1,
+            });
+          }
+
+        } else {
+          return {
+            status: "Error",
+            message: `Error Léxico | Línea: ${lineIndex + 1} | Token no reconocido: ${token}`,
+          };
+        }
+
+        tokens.push({
+          no: tokens.length + 1,
+          line: lineIndex + 1,
+          tok: token,
+          type,
+          code
+        });
+      }
+    }
 
     return {
       status: "Correct",
       message: "Lexicamente Correcto :)",
       data: {
+        tokens,
         identifiers,
-        constants
+        constants,
       }
-    }
+    };
   }
 }
