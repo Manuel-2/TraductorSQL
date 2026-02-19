@@ -1,3 +1,5 @@
+import { Analyzer } from './Analyzer.js';
+import { View } from './View.js';
 
 
 const placeHolder = `SELECT ANOMBRE, CALIFICACION, TURNO
@@ -15,7 +17,9 @@ export class InputHandler {
 
     this.#textInput.value = placeHolder;
 
-    this.#runButton.addEventListener("click", this.readSQLInput);
+    this.#runButton.addEventListener("click", (e) => {
+      this.readSQLInput(e);
+    });
   }
 
   readSQLInput(event) {
@@ -25,5 +29,6 @@ export class InputHandler {
 
     const results = Analyzer.analyzeLexicaly(input);
 
+    View.showLexiconTables(results);
   }
 }

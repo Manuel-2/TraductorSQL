@@ -1,6 +1,6 @@
-class View {
+export class View {
 
-  showLexiconTables(results) {
+  static showLexiconTables(results) {
 
     //TODO: aceder a la consola esa y mortar el error
 
@@ -8,12 +8,13 @@ class View {
       return;
     }
 
+    //TODO mostar tabla de lexico completo con delimitadores palabras clave y asi
     this.renderDinamicTable(results.data.identifiers, identifiersTable);
-    this.renderDinamicTable(results.data.identifiers, constantsTable);
+    this.renderDinamicTable(results.data.constants, constantsTable);
   }
 
 
-  renderDinamicTable(data, table) {
+  static renderDinamicTable(data, table) {
     let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
     prevRows.forEach(prev_row => table.removeChild(prev_row));
 

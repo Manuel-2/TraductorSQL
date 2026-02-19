@@ -1,4 +1,51 @@
-class Analyzer {
+const keywords = {
+  select: 10,
+  'from': 11,
+  where: 12,
+  in: 13,
+  and: 14,
+  or: 15,
+  create: 16,
+  table: 17,
+  char: 18,
+  numeric: 19,
+  not: 20,
+  'null': 21,
+  constraint: 22,
+  key: 23,
+  primary: 24,
+  foreign: 25,
+  references: 26,
+  insert: 27,
+  into: 28,
+  values: 29
+};
+
+const delimiters = {
+  ",": 50,
+  ".": 51,
+  "(": 52,
+  ")": 53,
+  "\'": 54,
+}
+
+const mathOperators = {
+  "+": 70,
+  "-": 71,
+  "*": 72,
+  "/": 73,
+}
+
+const relationalOperators = {
+  ">": 81,
+  "<": 82,
+  "=": 83,
+  ">=": 84,
+  "<=": 85,
+}
+
+
+export class Analyzer {
   static analyzeLexicaly(lines) {
     let identifiers = [];
     let constants = [];
@@ -34,14 +81,13 @@ class Analyzer {
     });
 
 
-    let a = {
+    return {
       status: "Correct",
       message: "Lexicamente Correcto :)",
-      data: { 
+      data: {
         identifiers,
         constants
       }
     }
-    return [identifiers, constants];
   }
 }

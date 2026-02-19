@@ -1,7 +1,7 @@
 import "./style.css";
 import { InputHandler } from "./InputHandler";
 
-let InputHandler = new InputHandler(input, run);
+let  inputHandler = new InputHandler(input, run);
 
 
 // const keywords = {
