@@ -49,7 +49,7 @@ const numberRegex = /^\d+$/;
 const delimiterRegex = /,|\(|\)|\./;
 const identifierRegex = /^[A-Za-z_][A-Za-z0-9_]*$/;
 
-const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b/g;
+const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b|\S+|/g;
 
 export class Analyzer {
 
@@ -64,14 +64,20 @@ export class Analyzer {
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
       let line = lines[lineIndex];
       let lineTokens = line.match(tokenRegex) || [];
+      console.log(lineTokens);
 
       for (let tokenIndex = 0; tokenIndex < lineTokens.length; tokenIndex++) {
-
         let token = lineTokens[tokenIndex];
+        if (token.trim().length == 0){
+          continue;
+          console.log("ESPACIOOOO");
+        }
+
+
+
         let type = 0;
         let code = 0;
 
-        // CONSTANTS
         if (stringRegex.test(token) || numberRegex.test(token)) {
           constantsValueCounter++;
           code = constantsValueCounter;
@@ -82,20 +88,13 @@ export class Analyzer {
             value: code,
             line: lineIndex + 1,
           });
-
-        // OPERATORS
         } else if (operatorRegex.test(token)) {
           type = 8;
           code = relationalOperators[token] || mathOperators[token];
-
-        // DELIMITERS
         } else if (delimiterRegex.test(token)) {
           type = 5;
           code = delimiters[token];
-
-        // IDENTIFIERS / KEYWORDS
         } else if (identifierRegex.test(token)) {
-
           let tokenLower = token.toLowerCase();
 
           if (keywords.hasOwnProperty(tokenLower)) {
@@ -114,6 +113,7 @@ export class Analyzer {
           }
 
         } else {
+          console.log("TOKEN: " + token + "|");
           return {
             status: "Error",
             message: `Error Léxico | Línea: ${lineIndex + 1} | Token no reconocido: ${token}`,

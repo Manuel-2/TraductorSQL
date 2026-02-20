@@ -1,25 +1,63 @@
 export class View {
 
   static showLexiconTables(results) {
-
-    //TODO: aceder a la consola esa y mortar el error
+    this.cleanTables();
 
     if (results.status == 'Error') {
-      console.log("erorr lexico unu");
+      log.innerText = results.message;
       return;
     }
-    console.log(results.data.tokens);
+    log.innerText = "Analizis Lexico Correcto :) ";
 
-    //TODO mostar tabla de lexico completo con delimitadores palabras clave y asi
-    this.renderDinamicTable(results.data.identifiers, identifiersTable);
-    this.renderDinamicTable(results.data.constants, constantsTable);
+    let { identifiers, constants, tokens } = results.data;
+    this.renderDinamicTable(identifiers, identifiersTable);
+    this.renderDinamicTable(constants, constantsTable);
+    this.renderLexiconTable(tokens);
   }
 
+  static cleanTables() {
+    let tables = [identifiersTable, constantsTable, lexicon]
 
-  static renderDinamicTable(data, table) {
-    let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
-    prevRows.forEach(prev_row => table.removeChild(prev_row));
+    tables.forEach(table => {
+      let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
+      prevRows.forEach(prev_row => table.removeChild(prev_row));
+    });
+  }
 
+  static renderLexiconTable(data) {
+
+    let fragment = document.createDocumentFragment();
+    data.forEach(row => {
+      let rowTable = document.createElement('tr');
+
+      let NoCell = document.createElement('td');
+      NoCell.innerText = row.no;
+
+      let lineCell = document.createElement('td');
+      lineCell.innerText = row.line;
+
+      let tokenCell = document.createElement('td');
+      tokenCell.innerText = row.tok;
+
+      let typeCell = document.createElement('td');
+      typeCell.innerText = row.type;
+
+      let codeCell = document.createElement('td');
+      codeCell.innerText = row.code;
+
+
+      rowTable.appendChild(NoCell);
+      rowTable.appendChild(lineCell);
+      rowTable.appendChild(tokenCell);
+      rowTable.appendChild(typeCell);
+      rowTable.appendChild(codeCell);
+
+      fragment.appendChild(rowTable);
+    });
+    lexicon.appendChild(fragment);
+  }
+
+  static renderDinamicTable(data, table) { 
     let fragment = document.createDocumentFragment();
     data.forEach(row => {
       let rowTable = document.createElement('tr');
