@@ -47,9 +47,9 @@ const operatorRegex = />=|<=|<>|[+\-*/=<>]/;
 const stringRegex = /^'[^']*'$/;
 const numberRegex = /^\d+$/;
 const delimiterRegex = /,|\(|\)|\./;
-const identifierRegex = /^[A-Za-z_][A-Za-z0-9_]*$/;
+const identifierRegex = /^[A-Za-z_][A-Za-z0-9_#]*#?$/;
 
-const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b|\S+|/g;
+const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b#?|\S+|/g;
 
 export class Analyzer {
 
@@ -70,7 +70,6 @@ export class Analyzer {
         let token = lineTokens[tokenIndex];
         if (token.trim().length == 0){
           continue;
-          console.log("ESPACIOOOO");
         }
 
 
