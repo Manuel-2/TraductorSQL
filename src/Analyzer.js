@@ -48,7 +48,6 @@ const stringRegex = /^'[^']*'$/;
 const numberRegex = /^\d+$/;
 const delimiterRegex = /,|\(|\)|\./;
 const identifierRegex = /^[A-Za-z_][A-Za-z0-9_#]*#?$/;
-
 const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b#?|\S+|/g;
 
 export class Analyzer {
@@ -64,16 +63,12 @@ export class Analyzer {
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
       let line = lines[lineIndex];
       let lineTokens = line.match(tokenRegex) || [];
-      console.log(lineTokens);
 
       for (let tokenIndex = 0; tokenIndex < lineTokens.length; tokenIndex++) {
         let token = lineTokens[tokenIndex];
         if (token.trim().length == 0){
           continue;
         }
-
-
-
         let type = 0;
         let code = 0;
 
@@ -81,7 +76,6 @@ export class Analyzer {
           constantsValueCounter++;
           code = constantsValueCounter;
           type = 6;
-
           constants.push({
             token,
             value: code,
@@ -95,7 +89,6 @@ export class Analyzer {
           code = delimiters[token];
         } else if (identifierRegex.test(token)) {
           let tokenLower = token.toLowerCase();
-
           if (keywords.hasOwnProperty(tokenLower)) {
             type = 1;
             code = keywords[tokenLower];

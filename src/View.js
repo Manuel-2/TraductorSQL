@@ -4,10 +4,10 @@ export class View {
     this.cleanTables();
 
     if (results.status == 'Error') {
-      log.innerText = results.message;
+      log.innerText = "> " + results.message;
       return;
     }
-    log.innerText = "Analizis Lexico Correcto :) ";
+    log.innerText = "> Analizis Lexico Correcto :) ";
 
     let { identifiers, constants, tokens } = results.data;
     this.renderDinamicTable(identifiers, identifiersTable);

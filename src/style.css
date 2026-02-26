@@ -5,8 +5,14 @@
 }
 
 :root {
-  --main-color: #DB3069;
-  --dark-color: black;
+  /* --main-color: #DB3069; */
+  /* --dark-color: black; */
+
+  /* --main-color: white; */
+  /* --dark-color: black; */
+
+  --main-color: black;
+  --dark-color: white;
 
   --max-width: 1100px;
 }
