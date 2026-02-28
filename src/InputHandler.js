@@ -1,4 +1,5 @@
 import { Analyzer } from './Analyzer.js';
+import { SintaxTableDML } from "./SintaxTableDML";
 import { View } from './View.js';
 
 
@@ -20,6 +21,10 @@ export class InputHandler {
     this.#runButton.addEventListener("click", (e) => {
       this.readSQLInput(e);
     });
+
+    findRules.addEventListener("click", (e => {
+      this.readTokenRuleInput(e);
+    }))
   }
 
   readSQLInput(event) {
@@ -30,5 +35,13 @@ export class InputHandler {
     const results = Analyzer.analyzeLexicaly(input);
 
     View.showLexiconTables(results);
+  }
+
+  readTokenRuleInput(event) {
+    let tokenValue = token.value;
+    let findedRules = SintaxTableDML.getTokenRules(parseInt(tokenValue)); 
+    console.log(tokenValue);
+    console.log(findedRules)
+    View.renderFindedTokenRules(findedRules);
   }
 }

@@ -27,6 +27,7 @@ body {
   width: fit-content;
   /* max-width: var(--max-width); */
   margin: 0 auto;
+  padding-bottom: 400px;
 }
 
 header {

@@ -24,6 +24,17 @@ export class View {
     });
   }
 
+  static renderFindedTokenRules(tokenRules) {
+    let text = "";
+    if (tokenRules) {
+      text = tokenRules.reduce((total, current) => total + current + ", ", "");
+    } else {
+      text = "No hay reglas para ese token.";
+    }
+
+    rules.innerText = text;
+  }
+
   static renderLexiconTable(data) {
 
     let fragment = document.createDocumentFragment();
@@ -57,7 +68,7 @@ export class View {
     lexicon.appendChild(fragment);
   }
 
-  static renderDinamicTable(data, table) { 
+  static renderDinamicTable(data, table) {
     let fragment = document.createDocumentFragment();
     data.forEach(row => {
       let rowTable = document.createElement('tr');
