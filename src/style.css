@@ -20,6 +20,7 @@
 html {
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   color: var(--main-color);
+  font-size: 1.6rem;
 }
 
 body {
@@ -108,8 +109,23 @@ textarea {
   padding: 5px;
 }
 
-section{
 
+button{
+  background-color: black;
+  color : white;
+  font-size: 24px;
+  margin: 15px 5px;
+}
+
+input{
+  font-size: 18px;
+}
+
+#findRules{
+  background-color: black;
+  color: white;
+  padding: 3px;
+  border: none;
 }
 
 .console>p {
