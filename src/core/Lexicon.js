@@ -1,3 +1,5 @@
+import { StatusCodes } from './definitions/StatusCodes.js'
+
 const keywords = {
   select: 10,
   'from': 11,
@@ -50,9 +52,11 @@ const delimiterRegex = /,|\(|\)|\./;
 const identifierRegex = /^[A-Za-z_][A-Za-z0-9_#]*#?$/;
 const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b#?|\S+|/g;
 
-export class Analyzer {
+export class Lexicon {
 
-  static analyzeLexicaly(lines) {
+  static scan(rawSql) {
+    let lines = rawSql.trim().split('\n');
+
     let identifiers = [];
     let constants = [];
     let tokens = [];
@@ -66,7 +70,7 @@ export class Analyzer {
 
       for (let tokenIndex = 0; tokenIndex < lineTokens.length; tokenIndex++) {
         let token = lineTokens[tokenIndex];
-        if (token.trim().length == 0){
+        if (token.trim().length == 0) {
           continue;
         }
         let type = 0;
@@ -105,7 +109,6 @@ export class Analyzer {
           }
 
         } else {
-          console.log("TOKEN: " + token + "|");
           return {
             status: "Error",
             message: `Error Léxico | Línea: ${lineIndex + 1} | Token no reconocido: ${token}`,
@@ -122,6 +125,7 @@ export class Analyzer {
       }
     }
 
+    // TODO: usar el codigo de status correcto
     return {
       status: "Correct",
       message: "Lexicamente Correcto :)",

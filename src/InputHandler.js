@@ -1,4 +1,5 @@
 import { Analyzer } from './Analyzer.js';
+import { Sql } from './core/Sql.js';
 import { SintaxTableDML } from "./SintaxTableDML";
 import { View } from './View.js';
 
@@ -28,20 +29,29 @@ export class InputHandler {
   }
 
   readSQLInput(event) {
-    let input = this.#textInput.value;
-    input = input.trim();
-    input = input.split('\n');
+    // obtener input
+    try {
+      let results = Sql.process(this.#textInput.value);
+    } catch (error) {
+      alert(error);
+    }
 
-    const results = Analyzer.analyzeLexicaly(input);
+    //try 
+    // pasarselo al SQL process()
+    // modulo de resultados y status code
+    // catch error
+    // modulo de errores mostrar fallo status code
 
-    View.showLexiconTables(results);
+
+
+    // const results = Analyzer.analyzeLexicaly(input);
+
+    // View.showLexiconTables(results);
   }
 
   readTokenRuleInput(event) {
     let tokenValue = token.value;
-    let findedRules = SintaxTableDML.getTokenRules(parseInt(tokenValue)); 
-    console.log(tokenValue);
-    console.log(findedRules)
+    let findedRules = SintaxTableDML.getTokenRules(parseInt(tokenValue));
     View.renderFindedTokenRules(findedRules);
   }
 }

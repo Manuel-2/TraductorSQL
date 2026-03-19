@@ -1,4 +1,4 @@
-export class SintaxTableDML {
+export class Dml {
   static #sintaxTableDML = {
     4: {
       301: [302],
