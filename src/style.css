@@ -109,6 +109,10 @@ textarea {
   padding: 5px;
 }
 
+.console>p{
+  font-size: 18px;
+}
+
 
 button{
   background-color: black;

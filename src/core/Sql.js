@@ -1,6 +1,6 @@
 import { View } from "../View";
-import { StatusCodes } from "./definitions/StatusCodes";
 import { Lexicon } from "./Lexicon";
+import { Sintax } from "./Sintax";
 
 
 export class Sql {
@@ -9,16 +9,14 @@ export class Sql {
     // pasarle el texto crudo al analizador lexico
     let lexicalResults = Lexicon.scan(rawSql);
     View.showLexiconTables(lexicalResults);
+
+    // Analisis Sintactico DML
+    Sintax.ll(lexicalResults.tokens);
     View.log("Todo Correcto :)");
-
-    //TODO: determinar el sublenguaje y aplicar la tabla de reglas correspondiente
-    // let sintax status = llamar al analizis DML(tablaLexica)
-
-    // retornar json de resultados de cada proceso
     return results;
   }
 
   static error(errorCodeOjb, line, description = '') {
-    throw new Error(`${errorCodeOjb.code} | Linea: ${line} | ${errorCodeOjb.message} .\n${description}`);
+    throw new Error(`${errorCodeOjb.code} | Linea: ${line} | ${errorCodeOjb.message}\n${description}`);
   }
 }

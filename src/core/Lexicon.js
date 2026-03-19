@@ -62,8 +62,8 @@ export class Lexicon {
     let constants = [];
     let tokens = [];
 
-    let constantsValueCounter = 400;
-    let identifiersValueCounter = 300;
+    let constantsValueCounter = 600;
+    let identifiersValueCounter = 400;
 
     for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
       let line = lines[lineIndex];

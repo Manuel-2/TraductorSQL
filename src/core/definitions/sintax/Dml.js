@@ -39,7 +39,7 @@ export class Dml {
     },
     15: {
       305: [99],
-      311: [317, 311],
+      312: [317, 311],
       317: [15],
     },
     50: {
@@ -83,7 +83,6 @@ export class Dml {
 
   static getTokenRules(token) {
     token = parseInt(token)
-    let rules = Object.keys(Dml.#sintaxTableDML[token] ?? {});
-    return rules.length > 0 ? rules : false;
+    return Dml.#sintaxTableDML[token];
   }
 }

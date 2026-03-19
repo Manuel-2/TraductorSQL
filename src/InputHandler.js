@@ -32,7 +32,7 @@ export class InputHandler {
     try {
       let results = Sql.process(this.#textInput.value);
     } catch (error) {
-      alert(error);
+      View.log(error);  
     }
 
     //try 
