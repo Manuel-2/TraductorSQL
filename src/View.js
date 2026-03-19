@@ -1,15 +1,13 @@
 export class View {
 
+  static log(message){
+    log.innerText = message;
+  }
+
   static showLexiconTables(results) {
     this.cleanTables();
 
-    if (results.status == 'Error') {
-      log.innerText = "> " + results.message;
-      return;
-    }
-    log.innerText = "> Analizis Lexico Correcto :) ";
-
-    let { identifiers, constants, tokens } = results.data;
+    let { identifiers, constants, tokens } = results;
     this.renderDinamicTable(identifiers, identifiersTable);
     this.renderDinamicTable(constants, constantsTable);
     this.renderLexiconTable(tokens);

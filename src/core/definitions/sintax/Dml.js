@@ -83,7 +83,7 @@ export class Dml {
 
   static getTokenRules(token) {
     token = parseInt(token)
-    let rules = Object.keys(SintaxTableDML.#sintaxTableDML[token] ?? {});
+    let rules = Object.keys(Dml.#sintaxTableDML[token] ?? {});
     return rules.length > 0 ? rules : false;
   }
 }

@@ -1,6 +1,5 @@
-import { Analyzer } from './Analyzer.js';
 import { Sql } from './core/Sql.js';
-import { SintaxTableDML } from "./SintaxTableDML";
+import { Dml } from "./core/definitions/sintax/Dml.js";
 import { View } from './View.js';
 
 
@@ -51,7 +50,7 @@ export class InputHandler {
 
   readTokenRuleInput(event) {
     let tokenValue = token.value;
-    let findedRules = SintaxTableDML.getTokenRules(parseInt(tokenValue));
+    let findedRules = Dml.getTokenRules(parseInt(tokenValue));
     View.renderFindedTokenRules(findedRules);
   }
 }

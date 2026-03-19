@@ -1,4 +1,5 @@
 import { StatusCodes } from './definitions/StatusCodes.js'
+import { Sql } from './Sql.js';
 
 const keywords = {
   select: 10,
@@ -109,10 +110,7 @@ export class Lexicon {
           }
 
         } else {
-          return {
-            status: "Error",
-            message: `Error Léxico | Línea: ${lineIndex + 1} | Token no reconocido: ${token}`,
-          };
+          Sql.error(StatusCodes.Code['Simbolo desconocido.'], lineIndex + 1, `Token no reconocido: ${token}`);
         }
 
         tokens.push({
@@ -127,13 +125,9 @@ export class Lexicon {
 
     // TODO: usar el codigo de status correcto
     return {
-      status: "Correct",
-      message: "Lexicamente Correcto :)",
-      data: {
-        tokens,
-        identifiers,
-        constants,
-      }
+      tokens,
+      identifiers,
+      constants,
     };
   }
 }
