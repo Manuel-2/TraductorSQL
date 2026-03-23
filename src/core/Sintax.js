@@ -5,15 +5,16 @@ import { Sql } from "./Sql";
 export class Sintax {
   static ll(tokensTable) {
     let stack = [199, 300];
-    tokensTable.push({ code: 199 });
+
+    let lastLine = tokensTable[tokensTable.length -1].line
+    tokensTable.push({ sintaxValue: 199, line: lastLine });
     let tokenIndex = 0;
 
     let x = null;
     let k = null;
     do {
       x = stack.pop();
-      k = tokensTable[tokenIndex].code
-      k = Sintax.#normalizeTokenCode(k);
+      k = tokensTable[tokenIndex].sintaxValue
 
       if (Sintax.#isTerminal(x)) {
         if (x == k) {
@@ -38,23 +39,15 @@ export class Sintax {
   }
 
   static #isTerminal(x) {
-    return x < 200 || x == 199;
+    return x < 200;
   }
 
   static #isProduction(x, k) {
     let rules = Dml.getTokenRules(k);
-    return rules && rules[x] != null;
-  }
-
-  static #normalizeTokenCode(code) {
-    // delimitadores
-    if (code >= 50 && code < 6) return 5; 
-    // constantes
-    if (code >= 60 && code < 70) return 6;
-    // operadores
-    if (code >= 70 && code < 80) return 7;
-    // relacionales
-    if (code >= 80 && code < 99) return 8;
-    return code;
+    if (rules) {
+      return rules[x] != null;
+    } else {
+      alert('Terminal/token no contemplado en la tabla sintactica k: ' + k);
+    }
   }
 }

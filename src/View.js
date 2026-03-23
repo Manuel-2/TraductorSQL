@@ -54,12 +54,16 @@ export class View {
       let codeCell = document.createElement('td');
       codeCell.innerText = row.code;
 
+      let sintaxCell = document.createElement('td');
+      sintaxCell.innerText = row.sintaxValue;
+
 
       rowTable.appendChild(NoCell);
       rowTable.appendChild(lineCell);
       rowTable.appendChild(tokenCell);
       rowTable.appendChild(typeCell);
       rowTable.appendChild(codeCell);
+      rowTable.appendChild(sintaxCell);
 
       fragment.appendChild(rowTable);
     });

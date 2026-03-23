@@ -29,6 +29,7 @@ const delimiters = {
   ".": 51,
   "(": 52,
   ")": 53,
+  "'": 54,
 }
 
 const mathOperators = {
@@ -49,7 +50,7 @@ const relationalOperators = {
 const operatorRegex = />=|<=|<>|[+\-*/=<>]/;
 const stringRegex = /^'[^']*'$/;
 const numberRegex = /^\d+$/;
-const delimiterRegex = /,|\(|\)|\./;
+const delimiterRegex = /,|\(|\)|\.|'/;
 const identifierRegex = /^[A-Za-z_][A-Za-z0-9_#]*#?$/;
 const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b#?|\S+|/g;
 
@@ -76,31 +77,97 @@ export class Lexicon {
         }
         let type = 0;
         let code = 0;
+        let sintaxValue = -1;
 
+
+        // =================== Identificar Tipo de token ===================== //
+
+        // Constantes =========================================================
         if (stringRegex.test(token) || numberRegex.test(token)) {
           constantsValueCounter++;
           code = constantsValueCounter;
-          type = 6;
           constants.push({
             token,
             value: code,
             line: lineIndex + 1,
           });
-        } else if (operatorRegex.test(token)) {
+
+          // Constantes Numericas -------------------------
+          if (numberRegex.test(token)) {
+            type = 61;
+            sintaxValue = 61;
+          }
+          // Constantes Alfanumericas ---------------------
+          else if (stringRegex.test(token)) {
+            type = 5;
+            code = delimiters['\''];
+            sintaxValue = code;
+
+            let delimiterBeforeEntry = {
+              no: tokens.length + 1,
+              line: lineIndex + 1,
+              tok: '\'',
+              type,
+              code,
+              sintaxValue
+            }
+            tokens.push(delimiterBeforeEntry);
+
+
+            let constantTokenEntry = {
+              no: tokens.length + 1,
+              line: lineIndex + 1,
+              tok: token.slice(1, token.length - 1),
+              type: 6,
+              code: constantsValueCounter,
+              sintaxValue: 62
+            }
+            tokens.push(constantTokenEntry);
+
+            // al final se deveria insertar otro delimitador de comilla
+            token = '\'';
+          }
+        }
+
+        // Operadores ==========================================================
+        else if (operatorRegex.test(token)) {
           type = 8;
           code = relationalOperators[token] || mathOperators[token];
-        } else if (delimiterRegex.test(token)) {
+
+          // Regla super arbitraria, la tabla sintactica espera ciertos valores como categorias
+          // (todos los operadores son el numero 8), mientras que para el * usando en un select se usa su codigo especifo
+          // por sitauciones similares no se usa el type ni code y ya (de aqui surge la nececidad de sintaxValue),
+          // por que la tabla sintactica mescla terminales con codigos de categoria con codigos especificos
+          sintaxValue = 8;
+          if (token == '*') {
+            sintaxValue = 72;
+          }
+        }
+
+        // Delimitadores =======================================================
+        else if (delimiterRegex.test(token)) {
           type = 5;
           code = delimiters[token];
-        } else if (identifierRegex.test(token)) {
+          sintaxValue = code;
+        }
+
+        // Identificadores y Palabras reservadas ===============================
+        else if (identifierRegex.test(token)) {
           let tokenLower = token.toLowerCase();
+
+          // Plabra reservada -----------------------
           if (keywords.hasOwnProperty(tokenLower)) {
             type = 1;
             code = keywords[tokenLower];
-          } else {
+            sintaxValue = code;
+          }
+
+          // Identificador --------------------------
+          else {
             identifiersValueCounter++;
             code = identifiersValueCounter;
             type = 4;
+            sintaxValue = 4;
 
             identifiers.push({
               token,
@@ -118,7 +185,8 @@ export class Lexicon {
           line: lineIndex + 1,
           tok: token,
           type,
-          code
+          code,
+          sintaxValue
         });
       }
     }
