@@ -10,7 +10,7 @@
 <body>
   <header>
     <h2>
-      Escaner SQL | Analisis Lexico
+      Practica 4 | Tabla sintactica DDl
     </h2>
     <p>Por: Manuel Eduardo Peñaloza López</p>
   </header>
@@ -32,48 +32,13 @@
     <article class="results">
       <table id="lexicon">
         <tr>
-          <th>No.</th>
-          <th>Linea</th>
           <th>Token</th>
-          <th>Tipo</th>
           <th>Codigo</th>
+          <th>Reglas asociadas</th>
         </tr>
       </table>
-      <br>
-      <table id="identifiersTable">
-        <tr>
-          <th>Identificador</th>
-          <th>Valor</th>
-          <th>Linea</th>
-        </tr>
-      </table>
-      <br>
-      <table id="constantsTable">
-        <tr>
-          <th>Constante</th>
-          <th>Valor</th>
-          <th>Linea</th>
-        </tr>
-      </table>
-      <br>
-
-
     </article>
   </main>
-  <header>
-    <h2>
-      Consulta de reglas por token
-    </h2>
-  </header>
-  <section>
-    <label for="">
-      Ingrese un token:
-      <input type="number" id="token" min='1' max='199' value="1">
-      <input type="submit" id='findRules' value="Obtener Reglas">
-    </label>
-    <br>
-    <p>Reglas asociadas: </p><span id='rules'></span>
-  </section>
 </body>
 
 </html>
