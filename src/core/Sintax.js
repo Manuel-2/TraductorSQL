@@ -32,7 +32,8 @@ export class Sintax {
           }
         }
         else {
-          Sql.error({ code: 300, message: "Error Sintactico" }, tokensTable[tokenIndex].line);
+          let err = StatusCodes.Code[k?x:300];
+          Sql.error(err, tokensTable[tokenIndex].line);
         }
       }
     } while (x != 199);
@@ -46,8 +47,6 @@ export class Sintax {
     let rules = Dml.getTokenRules(k);
     if (rules) {
       return rules[x] != null;
-    } else {
-      alert('Terminal/token no contemplado en la tabla sintactica k: ' + k);
-    }
+    } 
   }
 }

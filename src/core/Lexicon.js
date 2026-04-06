@@ -177,7 +177,7 @@ export class Lexicon {
           }
 
         } else {
-          Sql.error(StatusCodes.Code['Simbolo desconocido.'], lineIndex + 1, `Token no reconocido: ${token}`);
+          Sql.error(StatusCodes.Code[101], lineIndex + 1, `Token no reconocido: ${token}`);
         }
 
         tokens.push({

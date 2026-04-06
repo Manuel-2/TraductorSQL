@@ -1,28 +1,31 @@
 export class StatusCodes {
 
   static Code = {
-    "Simbolo desconocido.":{
+    101:{
       code: 101,
       message:"Simbolo desconocido."
     },
-
-    "Sin error.":{
+    200:{
       code: 200,
       message:"Sin error."
     },
-    "Se esperaba: Palabra Reservada.":{
+    305:{
+      code: 201,
+      message:"Se esperaba: Palabra Reservada."
+    }, 
+    312:{
       code: 201,
       message:"Se esperaba: Palabra Reservada."
     },
-    "Se esperaba: Identificador.":{
+    306:{
       code: 204,
       message:"Se esperaba: Identificador."
-    },
-    "Se esperaba: Delimitador.":{
+    }, 
+    300:{
       code: 205,
       message:"Se esperaba: Delimitador."
     },
-    "Se esperaba: Constante.":{
+    316:{
       code: 206,
       message:"Se esperaba: Constante."
     },
@@ -30,7 +33,7 @@ export class StatusCodes {
       code: 207,
       message:"Se esperaba: Operador."
     },
-    "Se esperaba: Operador Relacional.":{
+    314:{
       code: 208,
       message:"Se esperaba: Operador Relacional."
     },
