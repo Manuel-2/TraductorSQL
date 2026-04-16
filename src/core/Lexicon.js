@@ -30,6 +30,7 @@ const delimiters = {
   "(": 52,
   ")": 53,
   "'": 54,
+  ";": 55,
 }
 
 const mathOperators = {
@@ -50,7 +51,7 @@ const relationalOperators = {
 const operatorRegex = />=|<=|<>|[+\-*/=<>]/;
 const stringRegex = /^'[^']*'$/;
 const numberRegex = /^\d+$/;
-const delimiterRegex = /,|\(|\)|\.|'/;
+const delimiterRegex = /,|\(|\)|\.|'|;/;
 const identifierRegex = /^[A-Za-z_][A-Za-z0-9_#]*#?$/;
 const tokenRegex = /'[^']*'|>=|<=|<>|[+\-*/=<>]|,|\(|\)|\.|\b\d+\b|\b[A-Za-z_][A-Za-z0-9_]*\b#?|\S+|/g;
 

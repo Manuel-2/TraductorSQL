@@ -1,3 +1,5 @@
+import { Ddl } from "./core/definitions/sintax/Ddl.js";
+
 export class View {
 
   static log(message){
@@ -8,13 +10,13 @@ export class View {
     this.cleanTables();
 
     let { identifiers, constants, tokens } = results;
-    this.renderDinamicTable(identifiers, identifiersTable);
-    this.renderDinamicTable(constants, constantsTable);
+    // this.renderDinamicTable(identifiers, identifiersTable);
+    // this.renderDinamicTable(constants, constantsTable);
     this.renderLexiconTable(tokens);
   }
 
   static cleanTables() {
-    let tables = [identifiersTable, constantsTable, lexicon]
+    let tables = [lexicon]
 
     tables.forEach(table => {
       let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
@@ -39,31 +41,25 @@ export class View {
     data.forEach(row => {
       let rowTable = document.createElement('tr');
 
-      let NoCell = document.createElement('td');
-      NoCell.innerText = row.no;
-
-      let lineCell = document.createElement('td');
-      lineCell.innerText = row.line;
-
       let tokenCell = document.createElement('td');
       tokenCell.innerText = row.tok;
-
-      let typeCell = document.createElement('td');
-      typeCell.innerText = row.type;
-
+      
       let codeCell = document.createElement('td');
-      codeCell.innerText = row.code;
+      codeCell.innerText = row.sintaxValue;
 
-      let sintaxCell = document.createElement('td');
-      sintaxCell.innerText = row.sintaxValue;
+      let rulesCell = document.createElement('td');
+      let rules = Ddl.getTerminalRules(row.sintaxValue);
+      if(rules == undefined){
+        rules = 'No hay reglas asociadas';
+      }else{
+        rules = Object.keys(rules).join(',');
+      }
+      rulesCell.innerText = rules; 
 
 
-      rowTable.appendChild(NoCell);
-      rowTable.appendChild(lineCell);
       rowTable.appendChild(tokenCell);
-      rowTable.appendChild(typeCell);
       rowTable.appendChild(codeCell);
-      rowTable.appendChild(sintaxCell);
+      rowTable.appendChild(rulesCell);
 
       fragment.appendChild(rowTable);
     });
