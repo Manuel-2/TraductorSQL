@@ -8,12 +8,11 @@ export class Sql {
     const results = {};
     // pasarle el texto crudo al analizador lexico
     let lexicalResults = Lexicon.scan(rawSql);
+    console.table(lexicalResults.tokens);
 
-    View.showLexiconTables(lexicalResults);
-
-    // Analisis Sintactico DML
-    // Sintax.ll(lexicalResults.tokens);
-    // View.log("Todo Correcto :)");
+    // Analisis Sintactico
+    Sintax.ll(lexicalResults.tokens);
+    View.log("Todo Correcto :)");
     return results;
   }
 
