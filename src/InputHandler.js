@@ -13,6 +13,7 @@ export class InputHandler {
   #runButton;
 
   constructor(textInput, runButton) {
+
     this.#textInput = textInput;
     this.#runButton = runButton;
 
@@ -22,9 +23,9 @@ export class InputHandler {
       this.readSQLInput(e);
     });
 
-    findRules.addEventListener("click", (e => {
-      this.readTokenRuleInput(e);
-    }))
+    // findRules.addEventListener("click", (e => {
+    //   this.readTokenRuleInput(e);
+    // }))
   }
 
   readSQLInput(event) {

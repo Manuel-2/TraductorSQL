@@ -32,7 +32,9 @@ export class Ddl {
       209: [26, 4, 52, 4, 53, 210],
     },
     27: {
+      201:[211],
       211: [27, 28, 4, 29, 52, 212, 53, 55, 215],
+      215: [211],
     },
     50: {
       204: [99],
@@ -61,7 +63,7 @@ export class Ddl {
     },
   };
 
-  static getTerminalRules(terminal) {
+  static getTokenRules(terminal) {
     terminal = parseInt(terminal);
     return Ddl.#sintaxTable[terminal];
   }

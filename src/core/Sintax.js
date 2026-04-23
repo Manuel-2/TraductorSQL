@@ -1,10 +1,26 @@
 import { Dml } from "./definitions/sintax/Dml";
+import { Ddl } from "./definitions/sintax/Ddl";
 import { StatusCodes } from "./definitions/StatusCodes";
 import { Sql } from "./Sql";
 
 export class Sintax {
+  static sintaxTable;
   static ll(tokensTable) {
-    let stack = [199, 300];
+    const st = tokensTable[0].code;
+    let stack = [199];
+
+
+    Sintax.sintaxTable = Dml;
+    if(st == 16){
+      Sintax.sintaxTable = Ddl;
+      stack.push(200);
+    }else if(st == 27){
+      Sintax.sintaxTable = Ddl;
+      stack.push(211);
+    }else{
+      stack.push(300);
+    }
+
 
     let lastLine = tokensTable[tokensTable.length -1].line
     tokensTable.push({ sintaxValue: 199, line: lastLine });
@@ -20,19 +36,26 @@ export class Sintax {
         if (x == k) {
           tokenIndex++;
         } else {
-          Sql.error({ code: 300, message: "Error Sintactico" }, tokensTable[tokenIndex].line);
+          console.log(("-------------"));
+          console.log("K: " + k + " X: " + x);
+          let err = StatusCodes.Code[k?x:300];
+          Sql.error(err, tokensTable[tokenIndex].line);
         }
       } else {
         if (Sintax.#isProduction(x, k)) {
-          if (Dml.getTokenRules(k)[x][0] != 99) {
-            let production = Dml.getTokenRules(k)[x];
+          if (Sintax.sintaxTable.getTokenRules(k)[x][0] != 99) {
+            let production = Sintax.sintaxTable.getTokenRules(k)[x];
             for (let i = production.length - 1; i >= 0; i--) {
               stack.push(production[i]);
             }
           }
         }
         else {
+          console.log("prod no existente");
           let err = StatusCodes.Code[k?x:300];
+          console.log(("-------------"));
+          console.log("K: " + k + " X: " + x);
+          console.table(err);
           Sql.error(err, tokensTable[tokenIndex].line);
         }
       }
@@ -44,7 +67,7 @@ export class Sintax {
   }
 
   static #isProduction(x, k) {
-    let rules = Dml.getTokenRules(k);
+    let rules = Sintax.sintaxTable.getTokenRules(k);
     if (rules) {
       return rules[x] != null;
     } 
