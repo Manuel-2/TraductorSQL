@@ -17,6 +17,12 @@ export class Sql {
   }
 
   static error(errorCodeOjb, line, description = '') {
+    if(!errorCodeOjb){
+      errorCodeOjb = {
+        code: 201,
+        message: "Error en sentencia sql"
+      }
+    }
     throw new Error(`${errorCodeOjb.code} | Linea: ${line} | ${errorCodeOjb.message}\n${description}`);
   }
 }

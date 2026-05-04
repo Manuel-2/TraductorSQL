@@ -21,7 +21,9 @@ const keywords = {
   references: 26,
   insert: 27,
   into: 28,
-  values: 29
+  values: 29,
+  check: 30,
+  'date': 31
 };
 
 const delimiters = {
