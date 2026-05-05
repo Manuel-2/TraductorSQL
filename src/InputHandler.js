@@ -3,10 +3,21 @@ import { Dml } from "./core/definitions/sintax/Dml.js";
 import { View } from './View.js';
 
 
-const placeHolder = `SELECT ANOMBRE, CALIFICACION, TURNO
-FROM ALUMNOS, INSCRITOS, MATERIAS, CARRERAS
-WHERE MNOMBRE = 'PROGSIST' AND TURNO = 'TV'
-AND CNOMBRE = 'IDS' AND SEMESTRE = 'EJ2026' AND CALIFICACION >= 6`;
+const placeHolder = `Create Table Empleado (
+idEmpleado Numeric(3) Not Null,
+idDepartamento Numeric(3) NOT Null,
+Jefe Numeric(3),
+Sexo Char(1),
+Salario Numeric(10,2),
+FechaNac Date Not Null,
+FechaIni Date,
+Constraint DMEmpleado Check (Salario > 0),
+Constraint PKEmpleado Primary Key (idEmpleado),
+Constraint FKEmpleado1 Foreign Key (Jefe)
+References Empleado(idEmpleado),
+Constraint FKEmpleado2 Foreign Key (idDepartamento)
+References Departamento(idDepartamento));
+`;
 
 export class InputHandler {
   #textInput;

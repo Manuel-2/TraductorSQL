@@ -1,5 +1,6 @@
 import { Dml } from "./definitions/sintax/Dml";
 import { Ddl } from "./definitions/sintax/Ddl";
+import { Semantic } from "./Semanic";
 import { StatusCodes } from "./definitions/StatusCodes";
 import { Sql } from "./Sql";
 
@@ -8,7 +9,6 @@ export class Sintax {
   static ll(tokensTable) {
     const st = tokensTable[0].code;
     let stack = [199];
-
 
     Sintax.sintaxTable = Dml;
     if(st == 16){
@@ -21,6 +21,8 @@ export class Sintax {
       stack.push(300);
     }
 
+    // TOOD agregar un boton para limpiar tablas mas adelante
+    const semanticCtx = new Semantic();
 
     let lastLine = tokensTable[tokensTable.length -1].line
     tokensTable.push({ sintaxValue: 199, line: lastLine });
@@ -32,12 +34,15 @@ export class Sintax {
       x = stack.pop();
       k = tokensTable[tokenIndex].sintaxValue
 
-      if (Sintax.#isTerminal(x)) {
+      if(x >= 700){
+        console.log("semantic procedure");
+        console.log(x,k);
+        semanticCtx.executeRutine(x,tokensTable[tokenIndex]);
+      }
+      else if (Sintax.#isTerminal(x)) {
         if (x == k) {
           tokenIndex++;
         } else {
-          console.log(("-------------"));
-          console.log("K: " + k + " X: " + x);
           let err = StatusCodes.Code[k?x:300];
           Sql.error(err, tokensTable[tokenIndex].line);
         }
@@ -51,11 +56,7 @@ export class Sintax {
           }
         }
         else {
-          console.log("prod no existente");
           let err = StatusCodes.Code[k?x:300];
-          console.log(("-------------"));
-          console.log("K: " + k + " X: " + x);
-          console.table(err);
           Sql.error(err, tokensTable[tokenIndex].line);
         }
       }
