@@ -9,15 +9,22 @@ export class Semantic {
     this.tables = {};
     this.tablesCount = 0;
     this.atributes = {};
+    this.currentAtr = null;
     this.atrCount = 0;
     this.constraints = {};
+    this.constraintsCount = 0;
     this.currentTable = null;
 
     this.routines = {
       700: (token) => { this.#addTable(token) },
+      // carga atributos
       701: (token) => { this.#addAtribute(token) },
       702: (token) => { this.#checkDataType(token) },
-      703: (token) => { this.#keyAtrExist(token) },
+      703: (token) => { this.#registerAtrSize(token) },
+      704: (token) => { this.#setAtrNullable(token) },
+
+      //carga constraints
+      710: (token) => { this.#keyAtrExist(token) },
     };
   };
 
@@ -35,7 +42,6 @@ export class Semantic {
    * recive un nombre de atributo y retorna su informacion en al tabla actual
    * @param {string} atrName 
    * @returns tablaActual.atrName
-   *
   */
   getAtrCT(atrName) {
     return this.getAtr(this.currentTable.name + "." + atrName);
@@ -79,10 +85,11 @@ export class Semantic {
       name,
       type: null,
       size: null,
-      nullable: null,
+      nullable: true,
       table: this.currentTable
     }
     this.atributes[atrId] = atr;
+    this.currentAtr = atr;
   }
 
   #checkDataType(token) {
@@ -93,6 +100,24 @@ export class Semantic {
       },
         token.line
       );
+    this.currentAtr.type = token.tok;
+  }
+
+  #registerAtrSize(token) {
+    let size = parseInt(token.tok);
+    if (size == NaN) {
+      console.log("whut??");
+      return;
+    }
+    if (this.currentAtr.size == null) {
+      this.currentAtr.size = size;
+    } else {
+      this.currentAtr.size = [this.currentAtr.size, size];
+    }
+  }
+
+  #setAtrNullable(token) {
+    this.currentAtr.nullable = false;
   }
 
   #keyAtrExist(token) {
@@ -106,4 +131,39 @@ export class Semantic {
     }
   }
 
+  #addContstraint(token) {
+    let name = token.tok;
+    let tableName = this.currentTable.name;
+    let constraintID = tableName + "." + name;
+
+    if (this.constraints[constraintID] != undefined) {
+      Sql.error({
+        code: 306,
+        message: `Nombre de restricion: “${name}” está duplicado en la tabla: "${tableName}"`
+      },
+        token.line
+      );
+    }
+
+    this.constraintsCount++;
+
+    let con = {
+      tableNo: this.currentTable.no,
+      tableRef: this.currentTable,
+      constraintNo: this.constraintsCount,
+      type: -1,
+      atrNo: -1,
+      atrRef: null,
+      tableRef
+    }
+
+    this.constraints[constraintID] = con;
+  }
+
+  // #(token){
+  //   let tableName = token.tok;
+  //   if(this.tables[tableName] == false){
+
+  //   }
+  // }
 }
