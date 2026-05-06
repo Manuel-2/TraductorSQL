@@ -16,6 +16,7 @@ export class Semantic {
     this.routines = {
       700: (token) => { this.#addTable(token) },
       701: (token) => { this.#addAtribute(token) },
+      702: (token) => { this.#checkDataType(token) },
     };
   };
 
@@ -45,7 +46,8 @@ export class Semantic {
         code: 302,
         message: `Nombre de atributo “${name}” está duplicado en la tabla: "${this.currentTable.name}"`
       },
-        token.line);
+        token.line
+      );
     }
     this.atrCount++;
 
@@ -59,5 +61,15 @@ export class Semantic {
       table: this.currentTable
     }
     this.atributes[atrId] = atr;
+  }
+
+  #checkDataType(token) {
+    if ([18, 19, 31].includes(token.sintaxValue) == false)
+      Sql.error({
+        code: 301,
+        message: `El tipo de dato: ${token.tok} no existe.`
+      },
+        token.line
+      );
   }
 }

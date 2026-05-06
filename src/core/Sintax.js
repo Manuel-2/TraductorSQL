@@ -35,8 +35,6 @@ export class Sintax {
       k = tokensTable[tokenIndex].sintaxValue
 
       if(x >= 700){
-        console.log("semantic procedure");
-        console.log(x,k);
         semanticCtx.executeRutine(x,tokensTable[tokenIndex]);
       }
       else if (Sintax.#isTerminal(x)) {
