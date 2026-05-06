@@ -8,12 +8,15 @@ export class Semantic {
   constructor() {
     this.tables = {};
     this.tablesCount = 0;
+    this.currentTable = null;
+
     this.atributes = {};
-    this.currentAtr = null;
     this.atrCount = 0;
+    this.currentAtr = null;
+
     this.constraints = {};
     this.constraintsCount = 0;
-    this.currentTable = null;
+    this.currentCons = null;
 
     this.routines = {
       700: (token) => { this.#addTable(token) },
@@ -24,7 +27,8 @@ export class Semantic {
       704: (token) => { this.#setAtrNullable(token) },
 
       //carga constraints
-      710: (token) => { this.#keyAtrExist(token) },
+      711: (token) => { this.#addContstraint(token) },
+      712: (token) => { this.#keyAtrExist(token) },
     };
   };
 
@@ -90,6 +94,8 @@ export class Semantic {
     }
     this.atributes[atrId] = atr;
     this.currentAtr = atr;
+
+    this.currentTable.atributesCount++;
   }
 
   #checkDataType(token) {
@@ -120,14 +126,9 @@ export class Semantic {
     this.currentAtr.nullable = false;
   }
 
-  #keyAtrExist(token) {
-    if (this.getAtrCT(token.tok) == false) {
-      Sql.error({
-        code: 303,
-        message: `El nombre del atributo(llave): “${token.tok}" no existe en la tabla: “${this.currentTable.name}”.`
-      },
-        token.line
-      );
+
+  #contraintDefBegin(token) {
+    this.currentCons = {
     }
   }
 
@@ -154,16 +155,19 @@ export class Semantic {
       type: -1,
       atrNo: -1,
       atrRef: null,
-      tableRef
     }
-
     this.constraints[constraintID] = con;
+    this.currentTable.atributesCount++;
   }
 
-  // #(token){
-  //   let tableName = token.tok;
-  //   if(this.tables[tableName] == false){
-
-  //   }
-  // }
+  #keyAtrExist(token) {
+    if (this.getAtrCT(token.tok) == false) {
+      Sql.error({
+        code: 303,
+        message: `El nombre del atributo(llave): “${token.tok}" no existe en la tabla: “${this.currentTable.name}”.`
+      },
+        token.line
+      );
+    }
+  }
 }
