@@ -46,18 +46,6 @@ export class InputHandler {
     } catch (error) {
       View.log(error);  
     }
-
-    //try 
-    // pasarselo al SQL process()
-    // modulo de resultados y status code
-    // catch error
-    // modulo de errores mostrar fallo status code
-
-
-
-    // const results = Analyzer.analyzeLexicaly(input);
-
-    // View.showLexiconTables(results);
   }
 
   readTokenRuleInput(event) {

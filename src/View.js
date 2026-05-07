@@ -16,12 +16,12 @@ export class View {
   }
 
   static cleanTables() {
-    let tables = [lexicon]
+    // let tables = [lexicon]
 
-    tables.forEach(table => {
-      let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
-      prevRows.forEach(prev_row => table.removeChild(prev_row));
-    });
+    // tables.forEach(table => {
+    //   let prevRows = table.querySelectorAll(':scope > *:not(:first-child)')
+    //   prevRows.forEach(prev_row => table.removeChild(prev_row));
+    // });
   }
 
   static renderFindedTokenRules(tokenRules) {
@@ -72,9 +72,6 @@ export class View {
     let fragment = document.createDocumentFragment();
     for(let i = 0; i < tables.length; i++){
       let tab = tables[i];
-      console.log(tab);
-
-
       let rowTable = document.createElement('tr');
 
       let a = document.createElement('td');

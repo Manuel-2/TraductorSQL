@@ -75,6 +75,7 @@ export class Lexicon {
 
       for (let tokenIndex = 0; tokenIndex < lineTokens.length; tokenIndex++) {
         let token = lineTokens[tokenIndex];
+        token = token.toLowerCase(token);
         if (token.trim().length == 0) {
           continue;
         }

@@ -16,13 +16,13 @@ export class Sintax {
       stack.push(200);
     }else if(st == 27){
       Sintax.sintaxTable = Ddl;
-      stack.push(211);
+      stack.push(201);
     }else{
       stack.push(300);
     }
 
     // TOOD agregar un boton para limpiar tablas mas adelante
-    const semanticCtx = new Semantic();
+    const semanticCtx = Sql.semanticContext;
 
     let lastLine = tokensTable[tokensTable.length -1].line
     tokensTable.push({ sintaxValue: 199, line: lastLine });

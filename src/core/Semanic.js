@@ -18,6 +18,10 @@ export class Semantic {
     this.constraintsCount = 0;
     this.currentCons = null;
 
+    this.currentTableAtrs = null;
+    this.insertValueIndex = 0;
+
+
     this.routines = {
       700: (token) => { this.#addTable(token) },
       // carga atributos
@@ -29,6 +33,11 @@ export class Semantic {
       //carga constraints
       711: (token) => { this.#addContstraint(token) },
       712: (token) => { this.#keyAtrExist(token) },
+
+      // sentencias Insert
+      720: (token) => { this.#startInsert(token) },
+      721: (token) => { this.#addInsertValue(token) },
+      722: (token) => { this.#endInsert(token) }
     };
   };
 
@@ -165,6 +174,61 @@ export class Semantic {
       Sql.error({
         code: 303,
         message: `El nombre del atributo(llave): “${token.tok}" no existe en la tabla: “${this.currentTable.name}”.`
+      },
+        token.line
+      );
+    }
+  }
+
+  #startInsert(token) {
+    let table = this.tables[token.tok] ?? false;
+    if (table == false) {
+      Sql.error({
+        code: 309,
+        message: `La tabla: “${token.tok}" no existe.`
+      },
+        token.line
+      );
+    }
+    this.currentTable = table;
+    this.currentTableAtrs = Object.values(this.atributes).filter(atr => atr.table == this.currentTable);
+    this.insertValueIndex = 0;
+  }
+
+  #addInsertValue(token) {
+    let value = token.tok;
+    let valueType = token.sintaxValue == 62 ? 'char' : 'numeric';
+
+    let atr = this.currentTableAtrs[this.insertValueIndex]
+    let atrType = atr?.type;
+
+    if (valueType != atrType) {
+      Sql.error({
+        code: 307,
+        message: `En INSERT el valor: "${value}",  no corresponde con la tabla: ${this.currentTable.name}`
+      },
+        token.line
+      );
+    }
+
+    let valueSize = (value + "").length
+    if (valueSize > atr.size) {
+      Sql.error({
+        code: 308,
+        message: `En INSERT el valor "${value}" se truncaria`
+      },
+        token.line
+      );
+    }
+
+    this.insertValueIndex++;
+  }
+
+  #endInsert(token) {
+    if (this.insertValueIndex != this.currentTableAtrs.length) {
+      Sql.error({
+        code: 309,
+        message: `En INSERT faltan valores para que corresponda con la tabla: ${this.currentTable.name}`
       },
         token.line
       );
