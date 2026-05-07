@@ -59,6 +59,8 @@ export class Sintax {
         }
       }
     } while (x != 199);
+
+    return semanticCtx;
   }
 
   static #isTerminal(x) {

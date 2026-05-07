@@ -65,6 +65,40 @@ export class View {
     });
     lexicon.appendChild(fragment);
   }
+  
+  static pr6(data){
+    let tables = Object.values(data);
+ 
+    let fragment = document.createDocumentFragment();
+    for(let i = 0; i < tables.length; i++){
+      let tab = tables[i];
+      console.log(tab);
+
+
+      let rowTable = document.createElement('tr');
+
+      let a = document.createElement('td');
+      a.innerText = tab.no;
+
+
+let b = document.createElement('td');
+      b.innerText = tab.name;
+
+let c = document.createElement('td');
+      c.innerText = tab.atributesCount;
+
+
+let d = document.createElement('td');
+      d.innerText = tab.contraintsCount;
+
+      rowTable.appendChild(a);
+      rowTable.appendChild(b);
+      rowTable.appendChild(c);
+      rowTable.appendChild(d);
+      fragment.appendChild(rowTable);
+    } 
+    pr6Table.appendChild(fragment);
+  }
 
   static renderDinamicTable(data, table) {
     let fragment = document.createDocumentFragment();
