@@ -157,7 +157,7 @@ export class Semantic {
       atrRef: null,
     }
     this.constraints[constraintID] = con;
-    this.currentTable.atributesCount++;
+    this.currentTable.contraintsCount++;
   }
 
   #keyAtrExist(token) {
