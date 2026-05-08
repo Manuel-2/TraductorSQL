@@ -1,3 +1,4 @@
+import { View } from "../View";
 import { Sql } from "./Sql"
 
 export class Semantic {
@@ -17,6 +18,7 @@ export class Semantic {
     this.constraints = {};
     this.constraintsCount = 0;
     this.currentCons = null;
+    this.tableRef = null;
 
     this.currentTableAtrs = null;
     this.insertValueIndex = 0;
@@ -24,6 +26,7 @@ export class Semantic {
 
     this.routines = {
       700: (token) => { this.#addTable(token) },
+      710: (token) => { this.#registertable(token) },
       // carga atributos
       701: (token) => { this.#addAtribute(token) },
       702: (token) => { this.#checkDataType(token) },
@@ -33,6 +36,8 @@ export class Semantic {
       //carga constraints
       711: (token) => { this.#addContstraint(token) },
       712: (token) => { this.#keyAtrExist(token) },
+      713: (token) => { this.#tableRef(token) },
+      714: (token) => { this.#atrRef(token) },
 
       // sentencias Insert
       720: (token) => { this.#startInsert(token) },
@@ -73,9 +78,23 @@ export class Semantic {
       atributesCount: 0,
       contraintsCount: 0
     };
-    this.tables[name] = table;
+
+
     this.currentTable = table;
+    this.tables[this.currentTable.name] = this.currentTable;
   };
+
+  #registertable(token) {
+    // console.log("HEREEEEEEEEEEEEEEEEE:");
+    // console.log(this.currentTable);
+
+    // console.log(this.currentTable.name + "  | HA SIDO REGISTRADA");
+
+
+    // this.currentTable = null;
+    View.pr6(this.tables);
+    //mostar resultado
+  }
 
   #addAtribute(token) {
     let name = token.tok;
@@ -161,11 +180,13 @@ export class Semantic {
       tableNo: this.currentTable.no,
       tableRef: this.currentTable,
       constraintNo: this.constraintsCount,
+      name,
       type: -1,
       atrNo: -1,
       atrRef: null,
     }
     this.constraints[constraintID] = con;
+    this.currentCons = con;
     this.currentTable.contraintsCount++;
   }
 
@@ -179,6 +200,26 @@ export class Semantic {
       );
     }
   }
+
+  #tableRef(token) {
+    let table = this.tables[token.tok];
+
+    if (table == undefined) {
+      Sql.error({
+        code: 320,
+        message: `En la restricion de llave foranea: ${this.currentCons.name} se hace referencia una tabla que no existe: ${token.tok}`
+      },
+        token.line
+      );
+    }
+
+  }
+
+  #atrRef(token) {
+
+  }
+
+
 
   #startInsert(token) {
     let table = this.tables[token.tok] ?? false;

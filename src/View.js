@@ -67,6 +67,14 @@ export class View {
   }
   
   static pr6(data){
+      pr6Table.innerHTML = `
+        <tr>
+          <th>No.tabla</th>
+          <th>Nombre</th>
+          <th>No.atributos</th>
+          <th>No.restricciones</th>
+        </tr>
+`;
     let tables = Object.values(data);
  
     let fragment = document.createDocumentFragment();

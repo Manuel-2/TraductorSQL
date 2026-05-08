@@ -11,14 +11,7 @@ clean.addEventListener('click', () => {
 
   View.log(">");
 
-  pr6Table.innerHTML = `
-        <tr>
-          <th>No.tabla</th>
-          <th>Nombre</th>
-          <th>No.atributos</th>
-          <th>No.restricciones</th>
-        </tr>
-`;
+
 });
 
 

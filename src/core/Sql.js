@@ -10,13 +10,6 @@ export class Sql {
 
   static process(rawSql) {
 
-  pr6Table.innerHTML = `
-        <tr>
-          <th>No.tabla</th>
-          <th>Nombre</th>
-          <th>No.atributos</th>
-          <th>No.restricciones</th>
-        </tr>`;
 
 
     if(this.semanticContext == null){
