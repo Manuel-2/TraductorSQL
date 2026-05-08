@@ -18,7 +18,8 @@ export class Semantic {
     this.constraints = {};
     this.constraintsCount = 0;
     this.currentCons = null;
-    this.tableRef = null;
+    this.currentAtrAsFK = null;
+    this.fkTableRef = null;
 
     this.currentTableAtrs = null;
     this.insertValueIndex = 0;
@@ -199,6 +200,7 @@ export class Semantic {
         token.line
       );
     }
+    this.currentAtrAsFK = token.tok;
   }
 
   #tableRef(token) {
@@ -212,10 +214,40 @@ export class Semantic {
         token.line
       );
     }
-
+    this.fkTableRef = table;
   }
 
   #atrRef(token) {
+    let atributeName = token.tok;
+    let refId = this.fkTableRef.name + "." + atributeName;
+    let atr = this.atributes[refId];
+
+    if (atr == null || atr == undefined) {
+      Sql.error({
+        code: 320,
+        message: `En la restricion de llave foranea: "${this.currentCons.name}"
+que usa el campo: "${this.currentAtrAsFK}"
+el cual hace referencia a 
+un atributo: "${token.tok}" que no existe en la tabla: "${this.fkTableRef.name}"`
+      },
+        token.line
+      );
+    }
+
+    let currentAtr = this.atributes[this.currentTable.name + "." + this.currentAtrAsFK];
+
+    if (currentAtr.type != atr.type || currentAtr.size != atr.size) {
+      Sql.error({
+        code: 320,
+        message: `En la restricion de llave foranea: "${this.currentCons.name}"
+que usa el campo: "${this.currentAtrAsFK}"
+el cual hace referencia a 
+un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${this.fkTableRef.name}"`
+      },
+        token.line
+      );
+    }
+
 
   }
 
