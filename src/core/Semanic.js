@@ -24,8 +24,13 @@ export class Semantic {
     this.currentTableAtrs = null;
     this.insertValueIndex = 0;
 
+    // DML
+    this.selectCtx = null;
+
 
     this.routines = {
+      // DDL ==============================================
+      //tablas
       700: (token) => { this.#addTable(token) },
       710: (token) => { this.#registertable(token) },
       // carga atributos
@@ -44,6 +49,11 @@ export class Semantic {
       720: (token) => { this.#startInsert(token) },
       721: (token) => { this.#addInsertValue(token) },
       722: (token) => { this.#endInsert(token) }
+
+
+      // DML ===============================================
+
+
     };
   };
 
@@ -86,11 +96,6 @@ export class Semantic {
   };
 
   #registertable(token) {
-    // console.log("HEREEEEEEEEEEEEEEEEE:");
-    // console.log(this.currentTable);
-
-    // console.log(this.currentTable.name + "  | HA SIDO REGISTRADA");
-
 
     // this.currentTable = null;
     View.pr6(this.tables);
@@ -306,5 +311,37 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
         token.line
       );
     }
+  }
+
+
+  // DML PROCEDURES ====================================================
+  #startSelectCtx() {
+    this.selectCtx = {
+      selectColumns : [],
+      selectTables : [],
+      fromTables: []
+    };
+  }
+
+  #selectColumn(token) {
+    let name = token.tok;
+    this.selectCtx.selectColumns.push(name);
+  }
+
+  #changeCol2Table(token){
+    let table = this.selectCtx.cols.pop();
+    this.selectCtx.selectTables.push(table);
+
+    let realCol = token.tok;
+    this.selectCtx.selectColumns.push(realCol);
+  }
+
+  #addTable2Context(token) {
+    let tableName = token.tok;
+  }
+
+  #endFrom(token){
+    // validar que las columnas existen en las tablas (y no son ambiguas)
+
   }
 }
