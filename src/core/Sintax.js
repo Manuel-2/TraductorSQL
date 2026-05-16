@@ -11,6 +11,7 @@ export class Sintax {
     let stack = [199];
 
     Sintax.sintaxTable = Dml;
+
     if(st == 16){
       Sintax.sintaxTable = Ddl;
       stack.push(200);
@@ -18,6 +19,7 @@ export class Sintax {
       Sintax.sintaxTable = Ddl;
       stack.push(201);
     }else{
+      stack.push(755);
       stack.push(300);
     }
 

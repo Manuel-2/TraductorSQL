@@ -48,10 +48,16 @@ export class Semantic {
       // sentencias Insert
       720: (token) => { this.#startInsert(token) },
       721: (token) => { this.#addInsertValue(token) },
-      722: (token) => { this.#endInsert(token) }
+      722: (token) => { this.#endInsert(token) },
 
 
       // DML ===============================================
+      750: (token) => { this.#startSelectCtx(token) },
+      751: (token) => { this.#selectColumn(token) },
+      752: (token) => { this.#changeCol2Table(token) },
+      753: (token) => { this.#addTable2Context(token) },
+      // 754: (token) => { this.#endFrom(token) },
+      755: (token) => { this.#endSelect(token) },
 
 
     };
@@ -317,31 +323,110 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
   // DML PROCEDURES ====================================================
   #startSelectCtx() {
     this.selectCtx = {
-      selectColumns : [],
-      selectTables : [],
-      fromTables: []
+      selectColumns: [],
+      selectTables: [],
+      fromTables: [],
+      whereValidation: false
     };
   }
 
   #selectColumn(token) {
     let name = token.tok;
-    this.selectCtx.selectColumns.push(name);
+    this.selectCtx.selectColumns.push({
+      name,
+      line: token.line
+    });
   }
 
-  #changeCol2Table(token){
-    let table = this.selectCtx.cols.pop();
-    this.selectCtx.selectTables.push(table);
-
+  #changeCol2Table(token) {
+    let table = this.selectCtx.selectColumns.pop();
     let realCol = token.tok;
-    this.selectCtx.selectColumns.push(realCol);
+    let id = table.name + "." + realCol;
+    this.selectCtx.selectTables.push({
+      id,
+      line: token.line
+    }
+    );
   }
 
   #addTable2Context(token) {
     let tableName = token.tok;
+
+    if (this.tables[tableName] == undefined) {
+      Sql.error({
+        code: 309,
+        message: `La tabla: “${token.tok}" no existe.`
+      },
+        token.line
+      );
+    }
+
+    this.selectCtx.fromTables.push(tableName);
   }
 
-  #endFrom(token){
-    // validar que las columnas existen en las tablas (y no son ambiguas)
+  #endSelect(token) {
+    console.log(this.selectCtx);
+    this.selectCtx.whereValidation = true;
 
+    // TODO:validar luego que las tablas y atributos estan en el from (solo las de tipo tabla.atr)
+    // let atrsIdInScope = Object.keys(this.atributes)
+    //   .filter(id => this.selectCtx.fromTables.includes(id.split('.')[0]));
+    // let tablesInScope = atrsIdInScope.map(id => id.split('.')[0]);
+
+    this.selectCtx.selectTables.forEach(dat => {
+      let { id, line } = dat;
+      let tableName = id.split(".")[0];
+
+      if (this.tables[tableName] == undefined) {
+        Sql.error({
+          code: 314,
+          message: `La tabla: “${tableName}" no existe.`
+        },
+          line
+        );
+      }
+
+      if (this.atributes[id] == undefined) {
+        Sql.error({
+          code: 311,
+          message: `El nombre del atributo: “${id.split('.')[1]}" no existe en la tabla: “${tableName}”.`
+        },
+          line
+        );
+      }
+    });
+
+    this.#checkColumnsInSelectContext();
+
+  }
+
+  #checkColumnsInSelectContext() {
+    let tablesAtrs = Object.keys(this.atributes)
+      .filter(id => this.selectCtx.fromTables.includes(id.split('.')[0]))
+      .map(id => id.split('.')[1]);
+
+
+    this.selectCtx.selectColumns.forEach(atr => {
+      let { name, line } = atr;
+      let appearances = tablesAtrs.filter(a => a == name).length;
+
+      if (appearances == 0) {
+        Sql.error({
+          code: 311,
+          message: `El nombre del atributo: “${name}" no es valido.`
+        },
+          line
+        );
+      }
+
+      if (appearances > 1) {
+        Sql.error({
+          code: 311,
+          message: `El nombre atributo: “${name}" es ambiguo`
+        },
+          line
+        );
+      }
+    });
   }
 }

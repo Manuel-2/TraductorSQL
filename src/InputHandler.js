@@ -9,15 +9,10 @@ idDepartamento Numeric(3) NOT Null,
 Jefe Numeric(3),
 Sexo Char(1),
 Salario Numeric(10,2),
-FechaNac Date Not Null,
-FechaIni Date,
-Constraint DMEmpleado Check (Salario > 0),
-Constraint PKEmpleado Primary Key (idEmpleado),
-Constraint FKEmpleado1 Foreign Key (Jefe)
-References Empleado(idEmpleado),
-Constraint FKEmpleado2 Foreign Key (idDepartamento)
-References Departamento(idDepartamento));
-`;
+FechaNac Date Not Null
+);
+
+select salario from empleado where idempleado = 1`;
 
 export class InputHandler {
   #textInput;
