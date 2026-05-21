@@ -23,7 +23,8 @@ const keywords = {
   into: 28,
   values: 29,
   check: 30,
-  'date': 31
+  'date': 31,
+  distinct: 32
 };
 
 const delimiters = {

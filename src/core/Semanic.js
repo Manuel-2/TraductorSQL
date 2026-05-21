@@ -58,6 +58,7 @@ export class Semantic {
       753: (token) => { this.#addTable2Context(token) },
       // 754: (token) => { this.#endFrom(token) },
       755: (token) => { this.#endSelect(token) },
+      756: (token) => { this.#addAliasforTable(token) },
 
 
     };
@@ -323,30 +324,31 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
   // DML PROCEDURES ====================================================
   #startSelectCtx() {
     this.selectCtx = {
-      selectColumns: [],
-      selectTables: [],
+      usedAtrsNames: [],
+      usedAtrsIds: [],
+
       fromTables: [],
-      whereValidation: false
+      scopeAtributes: {},
+      scopeTables: {}
     };
   }
 
   #selectColumn(token) {
     let name = token.tok;
-    this.selectCtx.selectColumns.push({
+    this.selectCtx.usedAtrsNames.push({
       name,
       line: token.line
     });
   }
 
   #changeCol2Table(token) {
-    let table = this.selectCtx.selectColumns.pop();
+    let table = this.selectCtx.usedAtrsNames.pop();
     let realCol = token.tok;
     let id = table.name + "." + realCol;
-    this.selectCtx.selectTables.push({
+    this.selectCtx.usedAtrsIds.push({
       id,
       line: token.line
-    }
-    );
+    });
   }
 
   #addTable2Context(token) {
@@ -362,34 +364,55 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     }
 
     this.selectCtx.fromTables.push(tableName);
+
+    //create scoped atributies
+    Object.keys(this.atributes)
+      .filter(id => id.split(".")[0] == tableName)
+      .forEach(id => {
+        this.selectCtx.scopeAtributes[id] = true;
+      });
+
+    this.selectCtx.scopeTables[tableName] = true;
+  }
+
+  #addAliasforTable(token) {
+    let tableName = this.selectCtx.fromTables[this.selectCtx.fromTables.length - 1];
+    let alias = token.tok;
+    this.selectCtx.scopeTables[alias] = true;
+
+    Object.keys(this.atributes)
+      .filter(id => id.split(".")[0] == tableName)
+      .forEach(id => {
+        let aliasedId = alias + "." + id.split(".")[1]
+        this.selectCtx.scopeAtributes[aliasedId] = true;
+      });
   }
 
   #endSelect(token) {
     console.log(this.selectCtx);
-    this.selectCtx.whereValidation = true;
 
     // TODO:validar luego que las tablas y atributos estan en el from (solo las de tipo tabla.atr)
     // let atrsIdInScope = Object.keys(this.atributes)
     //   .filter(id => this.selectCtx.fromTables.includes(id.split('.')[0]));
     // let tablesInScope = atrsIdInScope.map(id => id.split('.')[0]);
 
-    this.selectCtx.selectTables.forEach(dat => {
+    this.selectCtx.usedAtrsIds.forEach(dat => {
       let { id, line } = dat;
       let tableName = id.split(".")[0];
 
-      if (this.tables[tableName] == undefined) {
+      if (this.selectCtx.scopeTables[tableName] == undefined) {
         Sql.error({
           code: 314,
-          message: `La tabla: “${tableName}" no existe.`
+          message: `La tabla: “${tableName}" no es valida`
         },
           line
         );
       }
 
-      if (this.atributes[id] == undefined) {
+      if (this.selectCtx.scopeAtributes[id] == undefined) {
         Sql.error({
           code: 311,
-          message: `El nombre del atributo: “${id.split('.')[1]}" no existe en la tabla: “${tableName}”.`
+          message: `El nombre identificador: “${id}" no es valido.`
         },
           line
         );
@@ -406,7 +429,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
       .map(id => id.split('.')[1]);
 
 
-    this.selectCtx.selectColumns.forEach(atr => {
+    this.selectCtx.usedAtrsNames.forEach(atr => {
       let { name, line } = atr;
       let appearances = tablesAtrs.filter(a => a == name).length;
 
