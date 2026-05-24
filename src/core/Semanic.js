@@ -59,6 +59,8 @@ export class Semantic {
       // 754: (token) => { this.#endFrom(token) },
       755: (token) => { this.#endSelect(token) },
       756: (token) => { this.#addAliasforTable(token) },
+      757: (token) => { this.#startWhere(token) },
+      758: (token) => { this.#storeCondition(token) },
 
 
     };
@@ -329,11 +331,20 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
 
       fromTables: [],
       scopeAtributes: {},
-      scopeTables: {}
+      scopeTables: {},
+
+      where: {
+        active: false,
+        a: null,
+        b: null
+      }
     };
   }
 
   #selectColumn(token) {
+    // if (this.#storeCondition(token)) return;
+    this.#storeCondition(token)
+
     let name = token.tok;
     this.selectCtx.usedAtrsNames.push({
       name,
@@ -342,14 +353,113 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
   }
 
   #changeCol2Table(token) {
+    // let table = this.selectCtx.usedAtrsNames[this.selectCtx.usedAtrsNames.length - 1];
     let table = this.selectCtx.usedAtrsNames.pop();
     let realCol = token.tok;
     let id = table.name + "." + realCol;
+
+    if (this.#storeCondition(id, true)) return;
+
+    this.selectCtx.usedAtrsNames.pop();
+
     this.selectCtx.usedAtrsIds.push({
       id,
       line: token.line
     });
   }
+
+  #storeCondition(atr, change2TableId = false) {
+    let where = this.selectCtx.where;
+    if (where.active) {
+      // console.log("storing a value");
+      // console.log(atr);
+
+
+      if (where.a == null || (where.a != null && change2TableId && typeof where.a != 'string')) {
+        where.a = atr;
+      } else {
+        where.b = atr;
+        // this.#validateComparison();
+      }
+    }
+    return where.active;
+  }
+
+  #validateComparison() {
+    let where = this.selectCtx.where;
+    console.log('==================== where ======================');
+    console.log(where);
+    where.active = false;
+    // return;
+
+    let getValue = (ab) => {
+      if ((typeof ab) == 'string') {
+        // tabla.atributo
+        return this.atributes[ab];
+      } else if (ab.sintaxValue == 4) {
+        let val = ab.tok;
+        // atributo puro
+        this.#checkColumnsInSelectContext();
+
+        let tablesAtrs = Object.keys(this.atributes)
+          .filter(id => this.selectCtx.fromTables.includes(id.split('.')[0]));
+
+        let appearances = tablesAtrs.filter(a => a.split('.')[1] == val);
+
+        if (appearances.length = 1) {
+          return this.atributes[appearances[0]].type;
+        } else {
+          if (appearances == 0) {
+            Sql.error({
+              code: 311,
+              message: `El nombre del atributo: “${ab}" no es valido.`
+            },
+              line
+            );
+          }
+
+          if (appearances > 1) {
+            Sql.error({
+              code: 311,
+              message: `El nombre atributo: “${ab}" es ambiguo`
+            },
+              line
+            );
+          }
+        }
+
+        console.log(appearances);
+        return null;
+
+
+        // return ab.;
+      } else if (ab.sintaxValue == 61) {
+        return 'numeric';
+      } else {
+        return 'char';
+      }
+    }
+
+    let typeA = getValue(where.a);
+    let typeB = getValue(where.b);
+
+    if (typeA != typeB) {
+      Sql.error({
+        code: 313,
+        message: `Error de conversión al convertir el valor del atributo
+‘${where.a.tok}’ del tipo:${typeA} a tipo de dato:${typeB}.`
+      },
+        where.a.line
+      );
+    }
+
+    console.log('Types:');
+    console.log("A :" + typeA);
+    console.log("B :" + typeB);
+    console.log('='.repeat(50));
+  }
+
+
 
   #addTable2Context(token) {
     let tableName = token.tok;
@@ -389,7 +499,8 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
   }
 
   #endSelect(token) {
-    console.log(this.selectCtx);
+    this.#validateComparison();
+    // console.log(this.selectCtx);
 
     // TODO:validar luego que las tablas y atributos estan en el from (solo las de tipo tabla.atr)
     // let atrsIdInScope = Object.keys(this.atributes)
@@ -451,5 +562,9 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
         );
       }
     });
+  }
+
+  #startWhere() {
+    this.selectCtx.where.active = true;
   }
 }
