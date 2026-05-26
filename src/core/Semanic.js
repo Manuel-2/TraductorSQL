@@ -392,10 +392,13 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     where.active = false;
     // return;
 
+
+    //TODO: parche rapido obtener el atr real del where.a segun si es  un 'table.col' o si si solo es atr
+
     let getValue = (ab) => {
       if ((typeof ab) == 'string') {
         // tabla.atributo
-        return this.atributes[ab];
+        return this.atributes[ab].type;
       } else if (ab.sintaxValue == 4) {
         let val = ab.tok;
         // atributo puro
@@ -442,6 +445,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
 
     let typeA = getValue(where.a);
     let typeB = getValue(where.b);
+
 
     if (typeA != typeB) {
       Sql.error({
