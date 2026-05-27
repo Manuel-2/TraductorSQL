@@ -398,7 +398,16 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     let getValue = (ab) => {
       if ((typeof ab) == 'string') {
         // tabla.atributo
-        return this.atributes[ab].type;
+        let atr = this.selectCtx.scopeAtributes[ab];
+        if (atr == undefined) {
+          Sql.error({
+            code: 309,
+            message: `El nombre de atributo “${ab}” no es válido.`
+          },
+            -1
+          );
+        }
+        return atr.type
       } else if (ab.sintaxValue == 4) {
         let val = ab.tok;
         // atributo puro
@@ -430,11 +439,8 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
             );
           }
         }
-
         console.log(appearances);
         return null;
-
-
         // return ab.;
       } else if (ab.sintaxValue == 61) {
         return 'numeric';
@@ -446,6 +452,11 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     let typeA = getValue(where.a);
     let typeB = getValue(where.b);
 
+    console.log(this.selectCtx);
+    console.log('Types:');
+    console.log("A :" + typeA);
+    console.log("B :" + typeB);
+    console.log('='.repeat(50));
 
     if (typeA != typeB) {
       Sql.error({
@@ -457,10 +468,6 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
       );
     }
 
-    console.log('Types:');
-    console.log("A :" + typeA);
-    console.log("B :" + typeB);
-    console.log('='.repeat(50));
   }
 
 
@@ -483,7 +490,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     Object.keys(this.atributes)
       .filter(id => id.split(".")[0] == tableName)
       .forEach(id => {
-        this.selectCtx.scopeAtributes[id] = true;
+        this.selectCtx.scopeAtributes[id] = this.atributes[id];
       });
 
     this.selectCtx.scopeTables[tableName] = true;
@@ -498,7 +505,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
       .filter(id => id.split(".")[0] == tableName)
       .forEach(id => {
         let aliasedId = alias + "." + id.split(".")[1]
-        this.selectCtx.scopeAtributes[aliasedId] = true;
+        this.selectCtx.scopeAtributes[aliasedId] = this.atributes[id];
       });
   }
 
