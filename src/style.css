@@ -29,6 +29,9 @@ body {
   /* max-width: var(--max-width); */
   margin: 0 auto;
   padding-bottom: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 header {
@@ -41,6 +44,11 @@ main {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  max-width: 80%;
+}
+
+main>div{
+  margin-top: 10px;
 }
 
 table,

@@ -7,11 +7,17 @@ use Illuminate\Support\Facades\Route;
 Route::post('/select', function (Request $request) {
     $raw = $request->getContent();
 
-    $results = DB::select($raw);
-
-    return response()->json([
-        'data' => $results
-    ]);
+    try {
+        $results = DB::select($raw);
+        return response()->json([
+            'data' => $results,
+            'message' => "Query OK | " . count($results) . " resultados."
+        ]);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'message' => $th->getMessage()
+        ]);
+    }
 });
 
 Route::post('/ddl', function (Request $request) {
@@ -21,11 +27,11 @@ Route::post('/ddl', function (Request $request) {
         DB::unprepared($raw);
 
         return response()->json([
-            'data' => 'Query OK | DDL ejecutado en la base de datos.'
+            'message' => 'Query OK | DDL ejecutado en la base de datos.'
         ]);
     } catch (\Throwable $th) {
         return response()->json([
-            'data' => 'Bad query | La base de datos real rechazo el query.'
+            'message' => 'Bad query | La base de datos real rechazo el query.'
         ]);
     }
 });
@@ -34,13 +40,12 @@ Route::post('/clean', function () {
     try {
         clear();
         return response()->json([
-            'data' => "Base de datos limpiada",
+            'message' => "Base de datos limpiada",
         ]);
     } catch (\Throwable $th) {
         return response()->json([
-            'data' => "Fallo al limpiar la base de datos.",
+            'message' => "Fallo al limpiar la base de datos.",
         ]);
-
     }
 });
 

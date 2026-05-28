@@ -3,7 +3,7 @@ import { Lexicon } from "./Lexicon";
 import { Semantic } from "./Semanic";
 import { Sintax } from "./Sintax";
 
-async function execute(endpoint, data) {
+async function execute(endpoint, data, render = false) {
   const response = await fetch('http://localhost:8000/api/' + endpoint, {
     method: "POST",
     headers: {
@@ -13,15 +13,17 @@ async function execute(endpoint, data) {
   });
 
   const d = await response.json();
-  console.log(d);
-  View.log(d.data);
+  if (render) {
+    View.renderTable(stable, d.data);
+  }
+  View.log(d.message);
 }
 
 export class Sql {
   static semanticContext;
 
-  static clean(){
-    execute('clean','hi');
+  static clean() {
+    execute('clean', 'hi');
   }
 
   static process(rawSql) {
@@ -39,16 +41,17 @@ export class Sql {
     View.pr6(semantic.tables);
     View.log("Ejecutando en la base de datos...");
 
-    rawSql = rawSql.replace(/#/gm,"");
-    rawSql = rawSql.replace(/(\r\n|\n|\r)/gm, "");
-    rawSql = rawSql.toLowerCase();
+    rawSql = rawSql.replace(/#/gm, "");
+    rawSql = rawSql.replace(/(\r\n|\n|\r)/gm, " ");
+    rawSql = rawSql.toUpperCase();
 
     let url = 'ddl';
     if (rawSql.includes('SELECT') || rawSql.includes('select')) {
       url = 'select';
     }
+    let render = (url == 'select');
 
-    execute(url, rawSql);
+    execute(url, rawSql, render);
     return results;
   }
 
@@ -60,10 +63,7 @@ export class Sql {
         <tr>
           <th>No.tabla</th>
           <th>Nombre</th>
-          <th>No.atributos</th>
-          <th>No.restricciones</th>
         </tr>`;
-
   }
 
   static error(errorCodeOjb, line, description = '') {
