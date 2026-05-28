@@ -61,6 +61,7 @@ export class Semantic {
       756: (token) => { this.#addAliasforTable(token) },
       757: (token) => { this.#startWhere(token) },
       758: (token) => { this.#storeCondition(token) },
+      759: (token) => { this.#validateComparison() },
 
 
     };
@@ -379,6 +380,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
         where.a = atr;
       } else {
         where.b = atr;
+        // validas hasta el and y or o final del select
         // this.#validateComparison();
       }
     }
@@ -387,9 +389,10 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
 
   #validateComparison() {
     let where = this.selectCtx.where;
+    if(where.a == null && where.b == null) return;
     console.log('==================== where ======================');
     console.log(where);
-    where.active = false;
+    // where.active = false;
     // return;
 
 
@@ -418,28 +421,27 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
 
         let appearances = tablesAtrs.filter(a => a.split('.')[1] == val);
 
-        if (appearances.length = 1) {
+        if (appearances.length == 1) {
           return this.atributes[appearances[0]].type;
         } else {
-          if (appearances == 0) {
+          if (appearances.length == 0) {
             Sql.error({
               code: 311,
               message: `El nombre del atributo: “${ab}" no es valido.`
             },
-              line
+              10
             );
           }
 
-          if (appearances > 1) {
+          if (appearances.length > 1) {
             Sql.error({
               code: 311,
               message: `El nombre atributo: “${ab}" es ambiguo`
             },
-              line
+              10
             );
           }
         }
-        console.log(appearances);
         return null;
         // return ab.;
       } else if (ab.sintaxValue == 61) {
@@ -459,14 +461,21 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     console.log('='.repeat(50));
 
     if (typeA != typeB) {
+      let aVal = where.a;
+      if(typeof where.a != 'string'){
+        aVal = where.a.tok
+      }
       Sql.error({
         code: 313,
         message: `Error de conversión al convertir el valor del atributo
-‘${where.a.tok}’ del tipo:${typeA} a tipo de dato:${typeB}.`
+‘${aVal}’ del tipo:${typeA} a tipo de dato:${typeB}.`
       },
         where.a.line
       );
     }
+
+    this.selectCtx.where.a = null;
+    this.selectCtx.where.b = null;
 
   }
 
@@ -511,6 +520,7 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
 
   #endSelect(token) {
     this.#validateComparison();
+
     // console.log(this.selectCtx);
 
     // TODO:validar luego que las tablas y atributos estan en el from (solo las de tipo tabla.atr)

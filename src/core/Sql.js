@@ -55,9 +55,9 @@ export class Sql {
 
     if(rawSql.includes('SELECT') || rawSql.includes('select')){
       console.log("select");
-      sendSql(rawSql);
+      // sendSql(rawSql);
     }else{
-      thanos(rawSql);
+      // thanos(rawSql);
     }
 
 
