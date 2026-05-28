@@ -8,10 +8,9 @@ let inputHandler = new InputHandler(input, run);
 
 clean.addEventListener('click', () => {
   Sql.startSemantic();
+  Sql.clean();
 
   View.log(">");
-
-
 });
 
 

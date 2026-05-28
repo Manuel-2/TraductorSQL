@@ -390,8 +390,8 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
   #validateComparison() {
     let where = this.selectCtx.where;
     if(where.a == null && where.b == null) return;
-    console.log('==================== where ======================');
-    console.log(where);
+    // console.log('==================== where ======================');
+    // console.log(where);
     // where.active = false;
     // return;
 
@@ -454,11 +454,11 @@ un atributo: "${token.tok}" no coincide (en tipo o en tamaño) en la tabla: "${t
     let typeA = getValue(where.a);
     let typeB = getValue(where.b);
 
-    console.log(this.selectCtx);
-    console.log('Types:');
-    console.log("A :" + typeA);
-    console.log("B :" + typeB);
-    console.log('='.repeat(50));
+    // console.log(this.selectCtx);
+    // console.log('Types:');
+    // console.log("A :" + typeA);
+    // console.log("B :" + typeB);
+    // console.log('='.repeat(50));
 
     if (typeA != typeB) {
       let aVal = where.a;
