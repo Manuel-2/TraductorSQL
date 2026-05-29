@@ -6,6 +6,11 @@ import { View } from "./View";
 
 let inputHandler = new InputHandler(input, run);
 
+Sql.startSemantic();
+Sql.clean();
+View.log(">");
+
+
 clean.addEventListener('click', () => {
   Sql.startSemantic();
   Sql.clean();
@@ -14,7 +19,7 @@ clean.addEventListener('click', () => {
 });
 
 
-load.addEventListener('click', ()=>{
+load.addEventListener('click', () => {
   input.value = `CREATE TABLE DEPARTAMENTOS(
 D# CHAR(2) NOT NULL,
 DNOMBRE CHAR(6) NOT NULL,

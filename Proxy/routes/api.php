@@ -4,6 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/tables', function (Request $request) {
+    $tables = DB::select("show tables;");
+
+    return response()->json([
+        'data' => $tables,
+        'message' => "Query OK "
+    ]);
+});
+
+
 Route::post('/select', function (Request $request) {
     $raw = $request->getContent();
 

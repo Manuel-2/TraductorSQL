@@ -7,12 +7,12 @@ export class View {
   }
 
   static renderTable(container, data) {
-    if(!data) {
+    container.innerHTML = "";
+    if(data == undefined || data.length ==  0) {
       View.log("Resultado vacio.");
       return;
     };
 
-    container.innerHTML = "";
     let table = document.createElement('table');
     let fragment = document.createDocumentFragment();
 
